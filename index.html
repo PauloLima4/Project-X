@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Planilha Financeira</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <span>Finanças</span>
+        </div>
+
+        <nav>
+            <button class="menu active" data-page="dashboard">
+                Dashboard
+            </button>
+
+            <button class="menu" data-page="entradas">
+                Entradas
+            </button>
+
+            <button class="menu" data-page="gastos">
+                Gastos
+            </button>
+
+            <button class="menu" data-page="contas">
+                Contas Fixas
+            </button>
+
+            <button class="menu" data-page="receber">
+                A Receber
+            </button>
+
+            <button class="menu" data-page="resumo">
+                Resumo Mensal
+            </button>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <!-- DASHBOARD -->
+         <section id="dashboard" class="page active-page">
+
+            <header>
+                <div>
+                    <h1>Dashboard</h1>
+                    <p>Visão geral das suas finanças</p>
+                </div>
+            </header>
+
+            <div class="cards">
+
+                <div class="card">
+                    <span>Saldo atual</span>
+                    <strong id="saldo">R$0,00</strong>
+                </div>
+
+                <div class="card">
+                    <span>Total recebido</span>
+                    <strong id="totalEntradas">R$0,00</strong>
+                </div>
+
+                <div class="card">
+                    <span>Total gasto</span>
+                    <strong id="totalGastos">R$0,00</strong>
+                </div>
+
+                <div class="card">
+                    <span>A receber</span>
+                    <strong id="totalReceber">R$0,00</strong>
+                </div>
+            </div>
+
+            <div class="charts">
+                <div class="chart-box">
+                    <h2>Entradas X Gastos</h2>
+                    <canvas id="graficoFinanceiro"></canvas>
+                </div>
+
+                <div class="chart-box">
+                    <h2>Gastos por categoria</h2>
+                    <canvas id="graficoCategorias"></canvas>
+                </div>
+            </div>
+         </section>
+
+         <!-- ENTRADAS -->
+          <section id="entradas" class="page">
+
+            <h1>Entradas</h1>
+
+            <form id="formEntrada">
+                <input type="text" id="entradaDescricao" placeholder="Descrição" required>
+
+                <input type="number" id="entradaValor" placeholder="Valor" step="0.01" required>
+
+                <input type="date" id="entradaData" required>
+
+                <input type="text" id="entradaCategoria" placeholder="Categoria" required>
+
+                <button type="submit">Adicionar Entrada</button>
+            </form>
+
+            <div class="table-container">
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Descrição</th>
+                            <th>Valor</th>
+                            <th>Data</th>
+                            <th>Categoria</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="listaEntradas"></tbody>
+                </table>
+            </div>
+          </section>
+
+          <!-- GASTOS -->
+           <section id="gastos" class="page">
+
+            <h1>Gastos</h1>
+
+            <form id="formGastos">
+
+                <input type="text" id="gastoDescricao" placeholder="Descrição" required>
+                <input type="date" id="gastoData" required>
+                <input type="text" id="gastoCategoria" placeholder="Categoria" required>
+
+                <select id="gastoTipo">
+
+                    <option value="Obrigatório">Obrigatório</option>
+                    <option value="Fútil">Fútil</option>
+                </select>
+
+                <button type="submit">Adicionar gasto</button>
+            </form>
+
+            <div class="table-container">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Descrição</th>
+                            <th>Valor</th>
+                            <th>Data</th>
+                            <th>Categoria</th>
+                            <th>Tipo</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="listaGastos"></tbody>
+                </table>
+            </div>
+           </section>
+
+           <!-- CONTAS -->
+            <section id="contas" class="page">
+
+                <h1>Contas Fixas</h1>
+                <form id="formConta">
+                    
+                    <input type="text id" id="contaNome" placeholder="Nome da conta" required>
+                    <input type="number" id="contaValor" placeholder="Valor" step="0.01" required>
+                    <input type="date" id="contaVencimento" required>
+
+                    <select id="contaStatus">
+                        <option value="Pendente">Pendente</option>
+                        <option value="Paga">Paga</option>
+                    </select>
+
+                    <button type="submit">Adicionar conta</button>
+                </form>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Conta</th>
+                                <th>Valor</th>
+                                <th>Vencimento</th>
+                                <th>Status</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="listaContas"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- A RECEBER -->
+             <section id="receber" class="page">
+
+                <h1>DInheiro a Receber</h1>
+
+                <form id="formReceber">
+                    <input type="text" id="receberValor" placeholder="Valor" step="0.01" required>
+                    <input type="date" id="receberPrazo" required>
+
+                    <button type="submit">Adicionar</button>
+                </form>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Pessoa</th>
+                                <th>Valor</th>
+                                <th>Data</th>
+                                <th>Prazo</th>
+                                <th>Dias em atraso</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="listaReceber"></tbody>
+                    </table>
+                </div>
+             </section>
+
+             <!-- RESUMO -->
+              <section id="resumo" class="page">
+
+                <h1>Resumo Mensal</h1>
+
+                <div class="summary">
+                    <div>
+                        <span>Entradas</span>
+                        <strong id="resumoEntradas">R$0,00</strong>
+                    </div>
+
+                    <div>
+                        <span>Gastos</span>
+                        <strong id="resumoGastos">R$0,00</strong>
+                    </div>
+
+                    <div>
+                        <span>Obrigatórios</span>
+                        <strong id="resumoFuteis">R$0,00</strong>
+                    </div>
+                </div>
+              </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
