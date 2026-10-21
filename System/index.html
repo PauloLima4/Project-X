@@ -14,11 +14,13 @@
 <body>
 
     <aside class="sidebar">
+
         <div class="logo">
             💰 <span>Finanças</span>
         </div>
 
         <nav>
+
             <button class="menu active" data-page="dashboard">
                 🏠 Dashboard
             </button>
@@ -42,21 +44,29 @@
             <button class="menu" data-page="resumo">
                 📊 Resumo Mensal
             </button>
+
         </nav>
+
     </aside>
 
 
     <main class="main">
 
-        <!-- DASHBOARD -->
+
+        <!-- ================= DASHBOARD ================= -->
+
         <section id="dashboard" class="page active-page">
 
             <header>
-                <div>
-                    <h1>Dashboard</h1>
-                    <p>Visão geral das suas finanças</p>
-                </div>
+
+                <h1>Dashboard</h1>
+
+                <p>
+                    Visão geral das suas finanças
+                </p>
+
             </header>
+
 
             <div class="cards">
 
@@ -86,13 +96,20 @@
             <div class="charts">
 
                 <div class="chart-box">
+
                     <h2>Entradas x Gastos</h2>
+
                     <canvas id="graficoFinanceiro"></canvas>
+
                 </div>
 
+
                 <div class="chart-box">
+
                     <h2>Gastos por categoria</h2>
+
                     <canvas id="graficoCategorias"></canvas>
+
                 </div>
 
             </div>
@@ -100,7 +117,9 @@
         </section>
 
 
-        <!-- ENTRADAS -->
+
+        <!-- ================= ENTRADAS ================= -->
+
         <section id="entradas" class="page">
 
             <h1>Entradas</h1>
@@ -119,6 +138,7 @@
                     id="entradaValor"
                     placeholder="Valor"
                     step="0.01"
+                    min="0"
                     required
                 >
 
@@ -141,11 +161,13 @@
 
             </form>
 
+
             <div class="table-container">
 
                 <table>
 
                     <thead>
+
                         <tr>
                             <th>Descrição</th>
                             <th>Valor</th>
@@ -153,6 +175,7 @@
                             <th>Categoria</th>
                             <th>Ação</th>
                         </tr>
+
                     </thead>
 
                     <tbody id="listaEntradas"></tbody>
@@ -164,7 +187,9 @@
         </section>
 
 
-        <!-- GASTOS -->
+
+        <!-- ================= GASTOS ================= -->
+
         <section id="gastos" class="page">
 
             <h1>Gastos</h1>
@@ -183,6 +208,7 @@
                     id="gastoValor"
                     placeholder="Valor"
                     step="0.01"
+                    min="0"
                     required
                 >
 
@@ -199,7 +225,11 @@
                     required
                 >
 
-                <select id="gastoTipo">
+                <select id="gastoTipo" required>
+
+                    <option value="">
+                        Tipo de gasto
+                    </option>
 
                     <option value="Obrigatório">
                         Obrigatório
@@ -244,7 +274,9 @@
         </section>
 
 
-        <!-- CONTAS -->
+
+        <!-- ================= CONTAS FIXAS ================= -->
+
         <section id="contas" class="page">
 
             <h1>Contas Fixas</h1>
@@ -263,6 +295,7 @@
                     id="contaValor"
                     placeholder="Valor"
                     step="0.01"
+                    min="0"
                     required
                 >
 
@@ -272,7 +305,24 @@
                     required
                 >
 
-                <select id="contaStatus">
+                <select id="contaObrigatorio" required>
+
+                    <option value="">
+                        É obrigatório?
+                    </option>
+
+                    <option value="Sim">
+                        Sim
+                    </option>
+
+                    <option value="Não">
+                        Não
+                    </option>
+
+                </select>
+
+
+                <select id="contaStatus" required>
 
                     <option value="Pendente">
                         Pendente
@@ -283,6 +333,7 @@
                     </option>
 
                 </select>
+
 
                 <button type="submit">
                     Adicionar conta
@@ -298,11 +349,19 @@
                     <thead>
 
                         <tr>
+
                             <th>Conta</th>
+
                             <th>Valor</th>
+
                             <th>Vencimento</th>
+
+                            <th>Obrigatória</th>
+
                             <th>Status</th>
+
                             <th>Ação</th>
+
                         </tr>
 
                     </thead>
@@ -316,17 +375,20 @@
         </section>
 
 
-        <!-- A RECEBER -->
+
+        <!-- ================= A RECEBER ================= -->
+
         <section id="receber" class="page">
 
             <h1>Dinheiro a Receber</h1>
+
 
             <form id="formReceber">
 
                 <input
                     type="text"
                     id="receberNome"
-                    placeholder="Nome da pessoa"
+                    placeholder="Pessoa"
                     required
                 >
 
@@ -335,6 +397,7 @@
                     id="receberValor"
                     placeholder="Valor"
                     step="0.01"
+                    min="0"
                     required
                 >
 
@@ -350,6 +413,19 @@
                     required
                 >
 
+                <select id="receberStatus">
+
+                    <option value="Pendente">
+                        Pendente
+                    </option>
+
+                    <option value="Recebido">
+                        Recebido
+                    </option>
+
+                </select>
+
+
                 <button type="submit">
                     Adicionar
                 </button>
@@ -364,12 +440,21 @@
                     <thead>
 
                         <tr>
+
                             <th>Pessoa</th>
+
                             <th>Valor</th>
+
                             <th>Data</th>
+
                             <th>Prazo</th>
+
                             <th>Dias em atraso</th>
+
+                            <th>Status</th>
+
                             <th>Ação</th>
+
                         </tr>
 
                     </thead>
@@ -383,37 +468,65 @@
         </section>
 
 
-        <!-- RESUMO -->
+
+        <!-- ================= RESUMO ================= -->
+
         <section id="resumo" class="page">
 
             <h1>Resumo Mensal</h1>
+
 
             <div class="summary">
 
                 <div>
                     <span>Entradas</span>
+
                     <strong id="resumoEntradas">
                         R$ 0,00
                     </strong>
                 </div>
 
+
                 <div>
                     <span>Gastos</span>
+
                     <strong id="resumoGastos">
                         R$ 0,00
                     </strong>
                 </div>
 
+
                 <div>
                     <span>Obrigatórios</span>
+
                     <strong id="resumoObrigatorios">
                         R$ 0,00
                     </strong>
                 </div>
 
+
                 <div>
                     <span>Fúteis</span>
+
                     <strong id="resumoFuteis">
+                        R$ 0,00
+                    </strong>
+                </div>
+
+
+                <div>
+                    <span>Saldo</span>
+
+                    <strong id="resumoSaldo">
+                        R$ 0,00
+                    </strong>
+                </div>
+
+
+                <div>
+                    <span>A receber</span>
+
+                    <strong id="resumoReceber">
                         R$ 0,00
                     </strong>
                 </div>

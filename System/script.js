@@ -1,18 +1,22 @@
 // ========================================
-// BANCO DE DADOS LOCAL
+// DADOS
 // ========================================
 
-let entradas =
-    JSON.parse(localStorage.getItem("entradas")) || [];
+let entradas = JSON.parse(
+    localStorage.getItem("entradas")
+) || [];
 
-let gastos =
-    JSON.parse(localStorage.getItem("gastos")) || [];
+let gastos = JSON.parse(
+    localStorage.getItem("gastos")
+) || [];
 
-let contas =
-    JSON.parse(localStorage.getItem("contas")) || [];
+let contas = JSON.parse(
+    localStorage.getItem("contas")
+) || [];
 
-let receber =
-    JSON.parse(localStorage.getItem("receber")) || [];
+let receber = JSON.parse(
+    localStorage.getItem("receber")
+) || [];
 
 
 // ========================================
@@ -44,7 +48,7 @@ function salvarDados() {
 
 
 // ========================================
-// FORMATAÇÃO
+// DINHEIRO
 // ========================================
 
 function dinheiro(valor) {
@@ -60,18 +64,29 @@ function dinheiro(valor) {
 
 
 // ========================================
+// DATA
+// ========================================
+
+function formatarData(data) {
+
+    if (!data) return "-";
+
+    const partes = data.split("-");
+
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+}
+
+
+// ========================================
 // NAVEGAÇÃO
 // ========================================
 
-const menus = document.querySelectorAll(".menu");
-
-menus.forEach(menu => {
+document.querySelectorAll(".menu").forEach(menu => {
 
     menu.addEventListener("click", () => {
 
-        menus.forEach(m =>
-            m.classList.remove("active")
-        );
+        document.querySelectorAll(".menu")
+            .forEach(m => m.classList.remove("active"));
 
         menu.classList.add("active");
 
@@ -80,12 +95,9 @@ menus.forEach(menu => {
                 page.classList.remove("active-page")
             );
 
-        const pagina =
-            document.getElementById(
-                menu.dataset.page
-            );
-
-        pagina.classList.add("active-page");
+        document
+            .getElementById(menu.dataset.page)
+            .classList.add("active-page");
 
     });
 
@@ -102,35 +114,49 @@ document
 
         event.preventDefault();
 
-        const entrada = {
+        const descricao =
+            document.getElementById(
+                "entradaDescricao"
+            ).value.trim();
+
+        const valor =
+            Number(
+                document.getElementById(
+                    "entradaValor"
+                ).value
+            );
+
+        const data =
+            document.getElementById(
+                "entradaData"
+            ).value;
+
+        const categoria =
+            document.getElementById(
+                "entradaCategoria"
+            ).value.trim();
+
+
+        if (!descricao || !valor || !data || !categoria) {
+            alert("Preencha todos os campos.");
+            return;
+        }
+
+
+        entradas.push({
 
             id: Date.now(),
 
-            descricao:
-                document.getElementById(
-                    "entradaDescricao"
-                ).value,
+            descricao,
 
-            valor:
-                Number(
-                    document.getElementById(
-                        "entradaValor"
-                    ).value
-                ),
+            valor,
 
-            data:
-                document.getElementById(
-                    "entradaData"
-                ).value,
+            data,
 
-            categoria:
-                document.getElementById(
-                    "entradaCategoria"
-                ).value
+            categoria
 
-        };
+        });
 
-        entradas.push(entrada);
 
         salvarDados();
 
@@ -151,40 +177,65 @@ document
 
         event.preventDefault();
 
-        const gasto = {
+
+        const descricao =
+            document.getElementById(
+                "gastoDescricao"
+            ).value.trim();
+
+        const valor =
+            Number(
+                document.getElementById(
+                    "gastoValor"
+                ).value
+            );
+
+        const data =
+            document.getElementById(
+                "gastoData"
+            ).value;
+
+        const categoria =
+            document.getElementById(
+                "gastoCategoria"
+            ).value.trim();
+
+        const tipo =
+            document.getElementById(
+                "gastoTipo"
+            ).value;
+
+
+        if (
+            !descricao ||
+            !valor ||
+            !data ||
+            !categoria ||
+            !tipo
+        ) {
+
+            alert("Preencha todos os campos do gasto.");
+
+            return;
+        }
+
+
+        gastos.push({
 
             id: Date.now(),
 
-            descricao:
-                document.getElementById(
-                    "gastoDescricao"
-                ).value,
+            descricao,
 
-            valor:
-                Number(
-                    document.getElementById(
-                        "gastoValor"
-                    ).value
-                ),
+            valor,
 
-            data:
-                document.getElementById(
-                    "gastoData"
-                ).value,
+            data,
 
-            categoria:
-                document.getElementById(
-                    "gastoCategoria"
-                ).value,
+            categoria,
 
-            tipo:
-                document.getElementById(
-                    "gastoTipo"
-                ).value
+            tipo
 
-        };
+        });
 
-        gastos.push(gasto);
 
         salvarDados();
 
@@ -196,7 +247,7 @@ document
 
 
 // ========================================
-// CONTAS
+// CONTAS FIXAS
 // ========================================
 
 document
@@ -205,35 +256,65 @@ document
 
         event.preventDefault();
 
-        const conta = {
+
+        const nome =
+            document.getElementById(
+                "contaNome"
+            ).value.trim();
+
+        const valor =
+            Number(
+                document.getElementById(
+                    "contaValor"
+                ).value
+            );
+
+        const vencimento =
+            document.getElementById(
+                "contaVencimento"
+            ).value;
+
+        const obrigatorio =
+            document.getElementById(
+                "contaObrigatorio"
+            ).value;
+
+        const status =
+            document.getElementById(
+                "contaStatus"
+            ).value;
+
+
+        if (
+            !nome ||
+            !valor ||
+            !vencimento ||
+            !obrigatorio ||
+            !status
+        ) {
+
+            alert("Preencha todos os campos da conta.");
+
+            return;
+        }
+
+
+        contas.push({
 
             id: Date.now(),
 
-            nome:
-                document.getElementById(
-                    "contaNome"
-                ).value,
+            nome,
 
-            valor:
-                Number(
-                    document.getElementById(
-                        "contaValor"
-                    ).value
-                ),
+            valor,
 
-            vencimento:
-                document.getElementById(
-                    "contaVencimento"
-                ).value,
+            vencimento,
 
-            status:
-                document.getElementById(
-                    "contaStatus"
-                ).value
+            obrigatorio,
 
-        };
+            status
 
-        contas.push(conta);
+        });
+
 
         salvarDados();
 
@@ -254,35 +335,64 @@ document
 
         event.preventDefault();
 
-        const pessoa = {
+
+        const nome =
+            document.getElementById(
+                "receberNome"
+            ).value.trim();
+
+        const valor =
+            Number(
+                document.getElementById(
+                    "receberValor"
+                ).value
+            );
+
+        const data =
+            document.getElementById(
+                "receberData"
+            ).value;
+
+        const prazo =
+            document.getElementById(
+                "receberPrazo"
+            ).value;
+
+        const status =
+            document.getElementById(
+                "receberStatus"
+            ).value;
+
+
+        if (
+            !nome ||
+            !valor ||
+            !data ||
+            !prazo
+        ) {
+
+            alert("Preencha todos os campos.");
+
+            return;
+        }
+
+
+        receber.push({
 
             id: Date.now(),
 
-            nome:
-                document.getElementById(
-                    "receberNome"
-                ).value,
+            nome,
 
-            valor:
-                Number(
-                    document.getElementById(
-                        "receberValor"
-                    ).value
-                ),
+            valor,
 
-            data:
-                document.getElementById(
-                    "receberData"
-                ).value,
+            data,
 
-            prazo:
-                document.getElementById(
-                    "receberPrazo"
-                ).value
+            prazo,
 
-        };
+            status
 
-        receber.push(pessoa);
+        });
+
 
         salvarDados();
 
@@ -306,6 +416,7 @@ function mostrarEntradas() {
 
     lista.innerHTML = "";
 
+
     entradas.forEach(item => {
 
         lista.innerHTML += `
@@ -316,7 +427,7 @@ function mostrarEntradas() {
 
                 <td>${dinheiro(item.valor)}</td>
 
-                <td>${item.data}</td>
+                <td>${formatarData(item.data)}</td>
 
                 <td>${item.categoria}</td>
 
@@ -353,6 +464,7 @@ function mostrarGastos() {
 
     lista.innerHTML = "";
 
+
     gastos.forEach(item => {
 
         lista.innerHTML += `
@@ -363,7 +475,7 @@ function mostrarGastos() {
 
                 <td>${dinheiro(item.valor)}</td>
 
-                <td>${item.data}</td>
+                <td>${formatarData(item.data)}</td>
 
                 <td>${item.categoria}</td>
 
@@ -402,6 +514,7 @@ function mostrarContas() {
 
     lista.innerHTML = "";
 
+
     contas.forEach(item => {
 
         lista.innerHTML += `
@@ -412,7 +525,9 @@ function mostrarContas() {
 
                 <td>${dinheiro(item.valor)}</td>
 
-                <td>${item.vencimento}</td>
+                <td>${formatarData(item.vencimento)}</td>
+
+                <td>${item.obrigatorio}</td>
 
                 <td>${item.status}</td>
 
@@ -449,27 +564,40 @@ function mostrarReceber() {
 
     lista.innerHTML = "";
 
+
     const hoje = new Date();
+
 
     receber.forEach(item => {
 
-        const prazo =
-            new Date(item.prazo);
-
         let atraso = 0;
 
-        if (hoje > prazo) {
 
-            const diferenca =
-                hoje - prazo;
+        if (item.status !== "Recebido") {
 
-            atraso =
-                Math.floor(
-                    diferenca /
-                    (1000 * 60 * 60 * 24)
+            const prazo =
+                new Date(
+                    item.prazo + "T23:59:59"
                 );
 
+
+            if (hoje > prazo) {
+
+                const diferenca =
+                    hoje.getTime() -
+                    prazo.getTime();
+
+
+                atraso =
+                    Math.floor(
+                        diferenca /
+                        (1000 * 60 * 60 * 24)
+                    );
+
+            }
+
         }
+
 
         lista.innerHTML += `
 
@@ -479,11 +607,13 @@ function mostrarReceber() {
 
                 <td>${dinheiro(item.valor)}</td>
 
-                <td>${item.data}</td>
+                <td>${formatarData(item.data)}</td>
 
-                <td>${item.prazo}</td>
+                <td>${formatarData(item.prazo)}</td>
 
-                <td>${atraso} dias</td>
+                <td>${atraso} dia(s)</td>
+
+                <td>${item.status}</td>
 
                 <td>
 
@@ -506,7 +636,7 @@ function mostrarReceber() {
 
 
 // ========================================
-// EXCLUSÕES
+// EXCLUIR
 // ========================================
 
 function excluirEntrada(id) {
@@ -569,8 +699,9 @@ function excluirReceber(id) {
 // DASHBOARD
 // ========================================
 
-let graficoFinanceiro;
-let graficoCategorias;
+let graficoFinanceiro = null;
+
+let graficoCategorias = null;
 
 
 function atualizarDashboard() {
@@ -578,23 +709,30 @@ function atualizarDashboard() {
     const totalEntradas =
         entradas.reduce(
             (total, item) =>
-                total + item.valor,
+                total + Number(item.valor),
             0
         );
+
 
     const totalGastos =
         gastos.reduce(
             (total, item) =>
-                total + item.valor,
+                total + Number(item.valor),
             0
         );
 
+
     const totalReceber =
-        receber.reduce(
-            (total, item) =>
-                total + item.valor,
-            0
-        );
+        receber
+            .filter(
+                item => item.status !== "Recebido"
+            )
+            .reduce(
+                (total, item) =>
+                    total + Number(item.valor),
+                0
+            );
+
 
     const saldo =
         totalEntradas - totalGastos;
@@ -604,17 +742,23 @@ function atualizarDashboard() {
         "saldo"
     ).textContent = dinheiro(saldo);
 
+
     document.getElementById(
         "totalEntradas"
-    ).textContent = dinheiro(totalEntradas);
+    ).textContent =
+        dinheiro(totalEntradas);
+
 
     document.getElementById(
         "totalGastos"
-    ).textContent = dinheiro(totalGastos);
+    ).textContent =
+        dinheiro(totalGastos);
+
 
     document.getElementById(
         "totalReceber"
-    ).textContent = dinheiro(totalReceber);
+    ).textContent =
+        dinheiro(totalReceber);
 
 
     criarGraficos();
@@ -631,21 +775,25 @@ function criarGraficos() {
     const totalEntradas =
         entradas.reduce(
             (total, item) =>
-                total + item.valor,
+                total + Number(item.valor),
             0
         );
+
 
     const totalGastos =
         gastos.reduce(
             (total, item) =>
-                total + item.valor,
+                total + Number(item.valor),
             0
         );
 
 
     if (graficoFinanceiro) {
+
         graficoFinanceiro.destroy();
+
     }
+
 
     graficoFinanceiro =
         new Chart(
@@ -663,14 +811,20 @@ function criarGraficos() {
                         "Gastos"
                     ],
 
-                    datasets: [{
+                    datasets: [
 
-                        data: [
-                            totalEntradas,
-                            totalGastos
-                        ]
+                        {
 
-                    }]
+                            label: "Valor",
+
+                            data: [
+                                totalEntradas,
+                                totalGastos
+                            ]
+
+                        }
+
+                    ]
 
                 },
 
@@ -678,10 +832,14 @@ function criarGraficos() {
 
                     responsive: true,
 
+                    maintainAspectRatio: false,
+
                     plugins: {
+
                         legend: {
                             display: false
                         }
+
                     }
 
                 }
@@ -692,22 +850,30 @@ function criarGraficos() {
 
     const categorias = {};
 
+
     gastos.forEach(gasto => {
 
-        if (!categorias[gasto.categoria]) {
+        const categoria =
+            gasto.categoria || "Sem categoria";
 
-            categorias[gasto.categoria] = 0;
+
+        if (!categorias[categoria]) {
+
+            categorias[categoria] = 0;
 
         }
 
-        categorias[gasto.categoria] +=
-            gasto.valor;
+
+        categorias[categoria] +=
+            Number(gasto.valor);
 
     });
 
 
     if (graficoCategorias) {
+
         graficoCategorias.destroy();
+
     }
 
 
@@ -725,20 +891,26 @@ function criarGraficos() {
                     labels:
                         Object.keys(categorias),
 
-                    datasets: [{
+                    datasets: [
 
-                        data:
-                            Object.values(
-                                categorias
-                            )
+                        {
 
-                    }]
+                            data:
+                                Object.values(
+                                    categorias
+                                )
+
+                        }
+
+                    ]
 
                 },
 
                 options: {
 
-                    responsive: true
+                    responsive: true,
+
+                    maintainAspectRatio: false
 
                 }
 
@@ -749,7 +921,7 @@ function criarGraficos() {
 
 
 // ========================================
-// RESUMO
+// RESUMO MENSAL
 // ========================================
 
 function atualizarResumo() {
@@ -757,16 +929,18 @@ function atualizarResumo() {
     const totalEntradas =
         entradas.reduce(
             (total, item) =>
-                total + item.valor,
+                total + Number(item.valor),
             0
         );
+
 
     const totalGastos =
         gastos.reduce(
             (total, item) =>
-                total + item.valor,
+                total + Number(item.valor),
             0
         );
+
 
     const obrigatorios =
         gastos
@@ -776,9 +950,10 @@ function atualizarResumo() {
             )
             .reduce(
                 (total, item) =>
-                    total + item.valor,
+                    total + Number(item.valor),
                 0
             );
+
 
     const futeis =
         gastos
@@ -788,9 +963,25 @@ function atualizarResumo() {
             )
             .reduce(
                 (total, item) =>
-                    total + item.valor,
+                    total + Number(item.valor),
                 0
             );
+
+
+    const totalReceber =
+        receber
+            .filter(
+                item => item.status !== "Recebido"
+            )
+            .reduce(
+                (total, item) =>
+                    total + Number(item.valor),
+                0
+            );
+
+
+    const saldo =
+        totalEntradas - totalGastos;
 
 
     document.getElementById(
@@ -798,20 +989,35 @@ function atualizarResumo() {
     ).textContent =
         dinheiro(totalEntradas);
 
+
     document.getElementById(
         "resumoGastos"
     ).textContent =
         dinheiro(totalGastos);
+
 
     document.getElementById(
         "resumoObrigatorios"
     ).textContent =
         dinheiro(obrigatorios);
 
+
     document.getElementById(
         "resumoFuteis"
     ).textContent =
         dinheiro(futeis);
+
+
+    document.getElementById(
+        "resumoSaldo"
+    ).textContent =
+        dinheiro(saldo);
+
+
+    document.getElementById(
+        "resumoReceber"
+    ).textContent =
+        dinheiro(totalReceber);
 
 }
 
@@ -838,7 +1044,7 @@ function atualizarTudo() {
 
 
 // ========================================
-// INICIALIZAÇÃO
+// INICIAR
 // ========================================
 
 atualizarTudo();
