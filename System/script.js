@@ -1,27 +1,35 @@
-// ========================================
-// DADOS
-// ========================================
+// ======================================================
+// BANCO DE DADOS
+// ======================================================
 
-let entradas = JSON.parse(
-    localStorage.getItem("entradas")
-) || [];
-
-let gastos = JSON.parse(
-    localStorage.getItem("gastos")
-) || [];
-
-let contas = JSON.parse(
-    localStorage.getItem("contas")
-) || [];
-
-let receber = JSON.parse(
-    localStorage.getItem("receber")
-) || [];
+let entradas =
+    JSON.parse(localStorage.getItem("entradas")) || [];
 
 
-// ========================================
+let gastos =
+    JSON.parse(localStorage.getItem("gastos")) || [];
+
+
+let contas =
+    JSON.parse(localStorage.getItem("contas")) || [];
+
+
+let receber =
+    JSON.parse(localStorage.getItem("receber")) || [];
+
+
+// ======================================================
+// GRÁFICOS
+// ======================================================
+
+let graficoFinanceiro = null;
+
+let graficoCategorias = null;
+
+
+// ======================================================
 // SALVAR
-// ========================================
+// ======================================================
 
 function salvarDados() {
 
@@ -47,9 +55,9 @@ function salvarDados() {
 }
 
 
-// ========================================
-// DINHEIRO
-// ========================================
+// ======================================================
+// FORMATAÇÃO
+// ======================================================
 
 function dinheiro(valor) {
 
@@ -60,12 +68,9 @@ function dinheiro(valor) {
             currency: "BRL"
         }
     );
+
 }
 
-
-// ========================================
-// DATA
-// ========================================
 
 function formatarData(data) {
 
@@ -73,40 +78,52 @@ function formatarData(data) {
 
     const partes = data.split("-");
 
+    if (partes.length !== 3) return data;
+
     return `${partes[2]}/${partes[1]}/${partes[0]}`;
+
 }
 
 
-// ========================================
+// ======================================================
 // NAVEGAÇÃO
-// ========================================
+// ======================================================
 
 document.querySelectorAll(".menu").forEach(menu => {
 
     menu.addEventListener("click", () => {
 
         document.querySelectorAll(".menu")
-            .forEach(m => m.classList.remove("active"));
+            .forEach(item =>
+                item.classList.remove("active")
+            );
+
 
         menu.classList.add("active");
+
 
         document.querySelectorAll(".page")
             .forEach(page =>
                 page.classList.remove("active-page")
             );
 
-        document
-            .getElementById(menu.dataset.page)
-            .classList.add("active-page");
+
+        const pagina =
+            document.getElementById(
+                menu.dataset.page
+            );
+
+
+        pagina.classList.add("active-page");
 
     });
 
 });
 
 
-// ========================================
+// ======================================================
 // ENTRADAS
-// ========================================
+// ======================================================
 
 document
     .getElementById("formEntrada")
@@ -114,32 +131,44 @@ document
 
         event.preventDefault();
 
+
         const descricao =
-            document.getElementById(
-                "entradaDescricao"
-            ).value.trim();
+            document
+                .getElementById("entradaDescricao")
+                .value.trim();
+
 
         const valor =
             Number(
-                document.getElementById(
-                    "entradaValor"
-                ).value
+                document
+                    .getElementById("entradaValor")
+                    .value
             );
 
+
         const data =
-            document.getElementById(
-                "entradaData"
-            ).value;
+            document
+                .getElementById("entradaData")
+                .value;
+
 
         const categoria =
-            document.getElementById(
-                "entradaCategoria"
-            ).value.trim();
+            document
+                .getElementById("entradaCategoria")
+                .value.trim();
 
 
-        if (!descricao || !valor || !data || !categoria) {
-            alert("Preencha todos os campos.");
+        if (
+            !descricao ||
+            valor <= 0 ||
+            !data ||
+            !categoria
+        ) {
+
+            alert("Preencha todos os campos corretamente.");
+
             return;
+
         }
 
 
@@ -167,9 +196,9 @@ document
     });
 
 
-// ========================================
+// ======================================================
 // GASTOS
-// ========================================
+// ======================================================
 
 document
     .getElementById("formGasto")
@@ -179,36 +208,40 @@ document
 
 
         const descricao =
-            document.getElementById(
-                "gastoDescricao"
-            ).value.trim();
+            document
+                .getElementById("gastoDescricao")
+                .value.trim();
+
 
         const valor =
             Number(
-                document.getElementById(
-                    "gastoValor"
-                ).value
+                document
+                    .getElementById("gastoValor")
+                    .value
             );
 
+
         const data =
-            document.getElementById(
-                "gastoData"
-            ).value;
+            document
+                .getElementById("gastoData")
+                .value;
+
 
         const categoria =
-            document.getElementById(
-                "gastoCategoria"
-            ).value.trim();
+            document
+                .getElementById("gastoCategoria")
+                .value.trim();
+
 
         const tipo =
-            document.getElementById(
-                "gastoTipo"
-            ).value;
+            document
+                .getElementById("gastoTipo")
+                .value;
 
 
         if (
             !descricao ||
-            !valor ||
+            valor <= 0 ||
             !data ||
             !categoria ||
             !tipo
@@ -217,6 +250,7 @@ document
             alert("Preencha todos os campos do gasto.");
 
             return;
+
         }
 
 
@@ -246,9 +280,9 @@ document
     });
 
 
-// ========================================
+// ======================================================
 // CONTAS FIXAS
-// ========================================
+// ======================================================
 
 document
     .getElementById("formConta")
@@ -258,36 +292,40 @@ document
 
 
         const nome =
-            document.getElementById(
-                "contaNome"
-            ).value.trim();
+            document
+                .getElementById("contaNome")
+                .value.trim();
+
 
         const valor =
             Number(
-                document.getElementById(
-                    "contaValor"
-                ).value
+                document
+                    .getElementById("contaValor")
+                    .value
             );
 
+
         const vencimento =
-            document.getElementById(
-                "contaVencimento"
-            ).value;
+            document
+                .getElementById("contaVencimento")
+                .value;
+
 
         const obrigatorio =
-            document.getElementById(
-                "contaObrigatorio"
-            ).value;
+            document
+                .getElementById("contaObrigatorio")
+                .value;
+
 
         const status =
-            document.getElementById(
-                "contaStatus"
-            ).value;
+            document
+                .getElementById("contaStatus")
+                .value;
 
 
         if (
             !nome ||
-            !valor ||
+            valor <= 0 ||
             !vencimento ||
             !obrigatorio ||
             !status
@@ -296,6 +334,7 @@ document
             alert("Preencha todos os campos da conta.");
 
             return;
+
         }
 
 
@@ -325,9 +364,9 @@ document
     });
 
 
-// ========================================
+// ======================================================
 // A RECEBER
-// ========================================
+// ======================================================
 
 document
     .getElementById("formReceber")
@@ -337,36 +376,40 @@ document
 
 
         const nome =
-            document.getElementById(
-                "receberNome"
-            ).value.trim();
+            document
+                .getElementById("receberNome")
+                .value.trim();
+
 
         const valor =
             Number(
-                document.getElementById(
-                    "receberValor"
-                ).value
+                document
+                    .getElementById("receberValor")
+                    .value
             );
 
+
         const data =
-            document.getElementById(
-                "receberData"
-            ).value;
+            document
+                .getElementById("receberData")
+                .value;
+
 
         const prazo =
-            document.getElementById(
-                "receberPrazo"
-            ).value;
+            document
+                .getElementById("receberPrazo")
+                .value;
+
 
         const status =
-            document.getElementById(
-                "receberStatus"
-            ).value;
+            document
+                .getElementById("receberStatus")
+                .value;
 
 
         if (
             !nome ||
-            !valor ||
+            valor <= 0 ||
             !data ||
             !prazo
         ) {
@@ -374,6 +417,7 @@ document
             alert("Preencha todos os campos.");
 
             return;
+
         }
 
 
@@ -403,9 +447,9 @@ document
     });
 
 
-// ========================================
-// MOSTRAR ENTRADAS
-// ========================================
+// ======================================================
+// TABELA DE ENTRADAS
+// ======================================================
 
 function mostrarEntradas() {
 
@@ -413,6 +457,7 @@ function mostrarEntradas() {
         document.getElementById(
             "listaEntradas"
         );
+
 
     lista.innerHTML = "";
 
@@ -423,13 +468,21 @@ function mostrarEntradas() {
 
             <tr>
 
-                <td>${item.descricao}</td>
+                <td>
+                    ${item.descricao}
+                </td>
 
-                <td>${dinheiro(item.valor)}</td>
+                <td>
+                    ${dinheiro(item.valor)}
+                </td>
 
-                <td>${formatarData(item.data)}</td>
+                <td>
+                    ${formatarData(item.data)}
+                </td>
 
-                <td>${item.categoria}</td>
+                <td>
+                    ${item.categoria}
+                </td>
 
                 <td>
 
@@ -451,9 +504,9 @@ function mostrarEntradas() {
 }
 
 
-// ========================================
-// MOSTRAR GASTOS
-// ========================================
+// ======================================================
+// TABELA DE GASTOS
+// ======================================================
 
 function mostrarGastos() {
 
@@ -461,6 +514,7 @@ function mostrarGastos() {
         document.getElementById(
             "listaGastos"
         );
+
 
     lista.innerHTML = "";
 
@@ -471,15 +525,25 @@ function mostrarGastos() {
 
             <tr>
 
-                <td>${item.descricao}</td>
+                <td>
+                    ${item.descricao}
+                </td>
 
-                <td>${dinheiro(item.valor)}</td>
+                <td>
+                    ${dinheiro(item.valor)}
+                </td>
 
-                <td>${formatarData(item.data)}</td>
+                <td>
+                    ${formatarData(item.data)}
+                </td>
 
-                <td>${item.categoria}</td>
+                <td>
+                    ${item.categoria}
+                </td>
 
-                <td>${item.tipo}</td>
+                <td>
+                    ${item.tipo}
+                </td>
 
                 <td>
 
@@ -501,9 +565,9 @@ function mostrarGastos() {
 }
 
 
-// ========================================
-// MOSTRAR CONTAS
-// ========================================
+// ======================================================
+// TABELA DE CONTAS
+// ======================================================
 
 function mostrarContas() {
 
@@ -511,6 +575,7 @@ function mostrarContas() {
         document.getElementById(
             "listaContas"
         );
+
 
     lista.innerHTML = "";
 
@@ -521,15 +586,25 @@ function mostrarContas() {
 
             <tr>
 
-                <td>${item.nome}</td>
+                <td>
+                    ${item.nome}
+                </td>
 
-                <td>${dinheiro(item.valor)}</td>
+                <td>
+                    ${dinheiro(item.valor)}
+                </td>
 
-                <td>${formatarData(item.vencimento)}</td>
+                <td>
+                    ${formatarData(item.vencimento)}
+                </td>
 
-                <td>${item.obrigatorio}</td>
+                <td>
+                    ${item.obrigatorio}
+                </td>
 
-                <td>${item.status}</td>
+                <td>
+                    ${item.status}
+                </td>
 
                 <td>
 
@@ -551,9 +626,52 @@ function mostrarContas() {
 }
 
 
-// ========================================
-// MOSTRAR A RECEBER
-// ========================================
+// ======================================================
+// DIAS DE ATRASO
+// ======================================================
+
+function calcularAtraso(prazo, status) {
+
+    if (status === "Recebido") {
+
+        return 0;
+
+    }
+
+
+    const hoje =
+        new Date();
+
+
+    const dataPrazo =
+        new Date(
+            prazo + "T23:59:59"
+        );
+
+
+    if (hoje <= dataPrazo) {
+
+        return 0;
+
+    }
+
+
+    const diferenca =
+        hoje.getTime() -
+        dataPrazo.getTime();
+
+
+    return Math.floor(
+        diferenca /
+        (1000 * 60 * 60 * 24)
+    );
+
+}
+
+
+// ======================================================
+// TABELA A RECEBER
+// ======================================================
 
 function mostrarReceber() {
 
@@ -562,58 +680,46 @@ function mostrarReceber() {
             "listaReceber"
         );
 
+
     lista.innerHTML = "";
-
-
-    const hoje = new Date();
 
 
     receber.forEach(item => {
 
-        let atraso = 0;
-
-
-        if (item.status !== "Recebido") {
-
-            const prazo =
-                new Date(
-                    item.prazo + "T23:59:59"
-                );
-
-
-            if (hoje > prazo) {
-
-                const diferenca =
-                    hoje.getTime() -
-                    prazo.getTime();
-
-
-                atraso =
-                    Math.floor(
-                        diferenca /
-                        (1000 * 60 * 60 * 24)
-                    );
-
-            }
-
-        }
+        const atraso =
+            calcularAtraso(
+                item.prazo,
+                item.status
+            );
 
 
         lista.innerHTML += `
 
             <tr>
 
-                <td>${item.nome}</td>
+                <td>
+                    ${item.nome}
+                </td>
 
-                <td>${dinheiro(item.valor)}</td>
+                <td>
+                    ${dinheiro(item.valor)}
+                </td>
 
-                <td>${formatarData(item.data)}</td>
+                <td>
+                    ${formatarData(item.data)}
+                </td>
 
-                <td>${formatarData(item.prazo)}</td>
+                <td>
+                    ${formatarData(item.prazo)}
+                </td>
 
-                <td>${atraso} dia(s)</td>
+                <td>
+                    ${atraso} dia(s)
+                </td>
 
-                <td>${item.status}</td>
+                <td>
+                    ${item.status}
+                </td>
 
                 <td>
 
@@ -635,9 +741,9 @@ function mostrarReceber() {
 }
 
 
-// ========================================
-// EXCLUIR
-// ========================================
+// ======================================================
+// EXCLUSÕES
+// ======================================================
 
 function excluirEntrada(id) {
 
@@ -645,6 +751,7 @@ function excluirEntrada(id) {
         entradas.filter(
             item => item.id !== id
         );
+
 
     salvarDados();
 
@@ -660,6 +767,7 @@ function excluirGasto(id) {
             item => item.id !== id
         );
 
+
     salvarDados();
 
     atualizarTudo();
@@ -673,6 +781,7 @@ function excluirConta(id) {
         contas.filter(
             item => item.id !== id
         );
+
 
     salvarDados();
 
@@ -688,6 +797,7 @@ function excluirReceber(id) {
             item => item.id !== id
         );
 
+
     salvarDados();
 
     atualizarTudo();
@@ -695,14 +805,9 @@ function excluirReceber(id) {
 }
 
 
-// ========================================
+// ======================================================
 // DASHBOARD
-// ========================================
-
-let graficoFinanceiro = null;
-
-let graficoCategorias = null;
-
+// ======================================================
 
 function atualizarDashboard() {
 
@@ -725,7 +830,8 @@ function atualizarDashboard() {
     const totalReceber =
         receber
             .filter(
-                item => item.status !== "Recebido"
+                item =>
+                    item.status !== "Recebido"
             )
             .reduce(
                 (total, item) =>
@@ -735,12 +841,14 @@ function atualizarDashboard() {
 
 
     const saldo =
-        totalEntradas - totalGastos;
+        totalEntradas -
+        totalGastos;
 
 
     document.getElementById(
         "saldo"
-    ).textContent = dinheiro(saldo);
+    ).textContent =
+        dinheiro(saldo);
 
 
     document.getElementById(
@@ -761,16 +869,43 @@ function atualizarDashboard() {
         dinheiro(totalReceber);
 
 
-    criarGraficos();
+    atualizarGraficos();
 
 }
 
 
-// ========================================
+// ======================================================
 // GRÁFICOS
-// ========================================
+// ======================================================
 
-function criarGraficos() {
+function atualizarGraficos() {
+
+    const canvasFinanceiro =
+        document.getElementById(
+            "graficoFinanceiro"
+        );
+
+
+    const canvasCategorias =
+        document.getElementById(
+            "graficoCategorias"
+        );
+
+
+    if (
+        !canvasFinanceiro ||
+        !canvasCategorias ||
+        typeof Chart === "undefined"
+    ) {
+
+        return;
+
+    }
+
+
+    // --------------------------------------
+    // TOTAIS
+    // --------------------------------------
 
     const totalEntradas =
         entradas.reduce(
@@ -788,65 +923,86 @@ function criarGraficos() {
         );
 
 
-    if (graficoFinanceiro) {
+    // --------------------------------------
+    // GRÁFICO FINANCEIRO
+    // --------------------------------------
 
-        graficoFinanceiro.destroy();
+    if (!graficoFinanceiro) {
 
-    }
+        graficoFinanceiro =
+            new Chart(
+                canvasFinanceiro,
+                {
 
+                    type: "bar",
 
-    graficoFinanceiro =
-        new Chart(
-            document.getElementById(
-                "graficoFinanceiro"
-            ),
-            {
+                    data: {
 
-                type: "bar",
+                        labels: [
+                            "Entradas",
+                            "Gastos"
+                        ],
 
-                data: {
+                        datasets: [
 
-                    labels: [
-                        "Entradas",
-                        "Gastos"
-                    ],
+                            {
 
-                    datasets: [
+                                label: "Valor",
 
-                        {
+                                data: [
+                                    totalEntradas,
+                                    totalGastos
+                                ]
 
-                            label: "Valor",
+                            }
 
-                            data: [
-                                totalEntradas,
-                                totalGastos
-                            ]
+                        ]
 
-                        }
+                    },
 
-                    ]
+                    options: {
 
-                },
+                        responsive: true,
 
-                options: {
+                        maintainAspectRatio: false,
 
-                    responsive: true,
+                        animation: false,
 
-                    maintainAspectRatio: false,
+                        plugins: {
 
-                    plugins: {
+                            legend: {
+                                display: false
+                            }
 
-                        legend: {
-                            display: false
                         }
 
                     }
 
                 }
+            );
 
-            }
-        );
+    } else {
 
+        graficoFinanceiro
+            .data
+            .datasets[0]
+            .data = [
+
+                totalEntradas,
+
+                totalGastos
+
+            ];
+
+
+        graficoFinanceiro.update("none");
+
+    }
+
+
+    // --------------------------------------
+    // CATEGORIAS
+    // --------------------------------------
 
     const categorias = {};
 
@@ -854,7 +1010,8 @@ function criarGraficos() {
     gastos.forEach(gasto => {
 
         const categoria =
-            gasto.categoria || "Sem categoria";
+            gasto.categoria ||
+            "Sem categoria";
 
 
         if (!categorias[categoria]) {
@@ -870,59 +1027,81 @@ function criarGraficos() {
     });
 
 
-    if (graficoCategorias) {
-
-        graficoCategorias.destroy();
-
-    }
+    const labels =
+        Object.keys(categorias);
 
 
-    graficoCategorias =
-        new Chart(
-            document.getElementById(
-                "graficoCategorias"
-            ),
-            {
+    const valores =
+        Object.values(categorias);
 
-                type: "doughnut",
 
-                data: {
+    // --------------------------------------
+    // GRÁFICO DE CATEGORIAS
+    // --------------------------------------
 
-                    labels:
-                        Object.keys(categorias),
+    if (!graficoCategorias) {
 
-                    datasets: [
+        graficoCategorias =
+            new Chart(
+                canvasCategorias,
+                {
 
-                        {
+                    type: "doughnut",
 
-                            data:
-                                Object.values(
-                                    categorias
-                                )
+                    data: {
 
-                        }
+                        labels,
 
-                    ]
+                        datasets: [
 
-                },
+                            {
 
-                options: {
+                                label: "Gastos",
 
-                    responsive: true,
+                                data: valores
 
-                    maintainAspectRatio: false
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        animation: false
+
+                    }
 
                 }
+            );
 
-            }
-        );
+    } else {
+
+        graficoCategorias
+            .data
+            .labels = labels;
+
+
+        graficoCategorias
+            .data
+            .datasets[0]
+            .data = valores;
+
+
+        graficoCategorias.update("none");
+
+    }
 
 }
 
 
-// ========================================
-// RESUMO MENSAL
-// ========================================
+// ======================================================
+// RESUMO
+// ======================================================
 
 function atualizarResumo() {
 
@@ -971,7 +1150,8 @@ function atualizarResumo() {
     const totalReceber =
         receber
             .filter(
-                item => item.status !== "Recebido"
+                item =>
+                    item.status !== "Recebido"
             )
             .reduce(
                 (total, item) =>
@@ -981,7 +1161,8 @@ function atualizarResumo() {
 
 
     const saldo =
-        totalEntradas - totalGastos;
+        totalEntradas -
+        totalGastos;
 
 
     document.getElementById(
@@ -1022,9 +1203,9 @@ function atualizarResumo() {
 }
 
 
-// ========================================
-// ATUALIZAR TUDO
-// ========================================
+// ======================================================
+// ATUALIZAR SISTEMA
+// ======================================================
 
 function atualizarTudo() {
 
@@ -1043,8 +1224,8 @@ function atualizarTudo() {
 }
 
 
-// ========================================
+// ======================================================
 // INICIAR
-// ========================================
+// ======================================================
 
 atualizarTudo();

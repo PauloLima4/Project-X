@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,10 +14,12 @@
 
 <body>
 
+    <!-- MENU LATERAL -->
+
     <aside class="sidebar">
 
         <div class="logo">
-            💰 <span>Finanças</span>
+            💰 Finanças
         </div>
 
         <nav>
@@ -50,6 +53,8 @@
     </aside>
 
 
+    <!-- CONTEÚDO -->
+
     <main class="main">
 
 
@@ -71,23 +76,46 @@
             <div class="cards">
 
                 <div class="card">
+
                     <span>Saldo atual</span>
-                    <strong id="saldo">R$ 0,00</strong>
+
+                    <strong id="saldo">
+                        R$ 0,00
+                    </strong>
+
                 </div>
 
+
                 <div class="card">
+
                     <span>Total recebido</span>
-                    <strong id="totalEntradas">R$ 0,00</strong>
+
+                    <strong id="totalEntradas">
+                        R$ 0,00
+                    </strong>
+
                 </div>
 
+
                 <div class="card">
+
                     <span>Total gasto</span>
-                    <strong id="totalGastos">R$ 0,00</strong>
+
+                    <strong id="totalGastos">
+                        R$ 0,00
+                    </strong>
+
                 </div>
 
+
                 <div class="card">
+
                     <span>A receber</span>
-                    <strong id="totalReceber">R$ 0,00</strong>
+
+                    <strong id="totalReceber">
+                        R$ 0,00
+                    </strong>
+
                 </div>
 
             </div>
@@ -95,20 +123,37 @@
 
             <div class="charts">
 
+
                 <div class="chart-box">
 
-                    <h2>Entradas x Gastos</h2>
+                    <h2>
+                        Entradas x Gastos
+                    </h2>
 
-                    <canvas id="graficoFinanceiro"></canvas>
+                    <div class="chart-area">
+
+                        <canvas
+                            id="graficoFinanceiro">
+                        </canvas>
+
+                    </div>
 
                 </div>
 
 
                 <div class="chart-box">
 
-                    <h2>Gastos por categoria</h2>
+                    <h2>
+                        Gastos por categoria
+                    </h2>
 
-                    <canvas id="graficoCategorias"></canvas>
+                    <div class="chart-area">
+
+                        <canvas
+                            id="graficoCategorias">
+                        </canvas>
+
+                    </div>
 
                 </div>
 
@@ -169,11 +214,13 @@
                     <thead>
 
                         <tr>
+
                             <th>Descrição</th>
                             <th>Valor</th>
                             <th>Data</th>
                             <th>Categoria</th>
                             <th>Ação</th>
+
                         </tr>
 
                     </thead>
@@ -255,12 +302,14 @@
                     <thead>
 
                         <tr>
+
                             <th>Descrição</th>
                             <th>Valor</th>
                             <th>Data</th>
                             <th>Categoria</th>
                             <th>Tipo</th>
                             <th>Ação</th>
+
                         </tr>
 
                     </thead>
@@ -351,15 +400,10 @@
                         <tr>
 
                             <th>Conta</th>
-
                             <th>Valor</th>
-
                             <th>Vencimento</th>
-
                             <th>Obrigatória</th>
-
                             <th>Status</th>
-
                             <th>Ação</th>
 
                         </tr>
@@ -381,7 +425,6 @@
         <section id="receber" class="page">
 
             <h1>Dinheiro a Receber</h1>
-
 
             <form id="formReceber">
 
@@ -425,7 +468,6 @@
 
                 </select>
 
-
                 <button type="submit">
                     Adicionar
                 </button>
@@ -442,17 +484,11 @@
                         <tr>
 
                             <th>Pessoa</th>
-
                             <th>Valor</th>
-
                             <th>Data</th>
-
                             <th>Prazo</th>
-
                             <th>Dias em atraso</th>
-
                             <th>Status</th>
-
                             <th>Ação</th>
 
                         </tr>
@@ -478,57 +514,82 @@
 
             <div class="summary">
 
+
                 <div>
-                    <span>Entradas</span>
+
+                    <span>
+                        Entradas
+                    </span>
 
                     <strong id="resumoEntradas">
                         R$ 0,00
                     </strong>
+
                 </div>
 
 
                 <div>
-                    <span>Gastos</span>
+
+                    <span>
+                        Gastos
+                    </span>
 
                     <strong id="resumoGastos">
                         R$ 0,00
                     </strong>
+
                 </div>
 
 
                 <div>
-                    <span>Obrigatórios</span>
+
+                    <span>
+                        Obrigatórios
+                    </span>
 
                     <strong id="resumoObrigatorios">
                         R$ 0,00
                     </strong>
+
                 </div>
 
 
                 <div>
-                    <span>Fúteis</span>
+
+                    <span>
+                        Fúteis
+                    </span>
 
                     <strong id="resumoFuteis">
                         R$ 0,00
                     </strong>
+
                 </div>
 
 
                 <div>
-                    <span>Saldo</span>
+
+                    <span>
+                        Saldo
+                    </span>
 
                     <strong id="resumoSaldo">
                         R$ 0,00
                     </strong>
+
                 </div>
 
 
                 <div>
-                    <span>A receber</span>
+
+                    <span>
+                        A receber
+                    </span>
 
                     <strong id="resumoReceber">
                         R$ 0,00
                     </strong>
+
                 </div>
 
             </div>
@@ -541,4 +602,5 @@
     <script src="script.js"></script>
 
 </body>
+
 </html>
