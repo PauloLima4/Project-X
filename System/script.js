@@ -1,67 +1,55 @@
-// ======================================================
-// BANCO DE DADOS
-// ======================================================
+"use strict";
 
-let entradas =
-    JSON.parse(localStorage.getItem("entradas")) || [];
+/* =====================================================
+   DADOS
+===================================================== */
 
-
-let gastos =
-    JSON.parse(localStorage.getItem("gastos")) || [];
-
-
-let contas =
-    JSON.parse(localStorage.getItem("contas")) || [];
+let entradas = carregar("entradas");
+let gastos = carregar("gastos");
+let contas = carregar("contas");
+let receber = carregar("receber");
 
 
-let receber =
-    JSON.parse(localStorage.getItem("receber")) || [];
+function carregar(chave) {
+    try {
+        const dados = localStorage.getItem(chave);
 
+        if (!dados) {
+            return [];
+        }
 
-// ======================================================
-// GRÁFICOS
-// ======================================================
+        const convertido = JSON.parse(dados);
 
-let graficoFinanceiro = null;
+        return Array.isArray(convertido) ? convertido : [];
 
-let graficoCategorias = null;
-
-
-// ======================================================
-// SALVAR
-// ======================================================
-
-function salvarDados() {
-
-    localStorage.setItem(
-        "entradas",
-        JSON.stringify(entradas)
-    );
-
-    localStorage.setItem(
-        "gastos",
-        JSON.stringify(gastos)
-    );
-
-    localStorage.setItem(
-        "contas",
-        JSON.stringify(contas)
-    );
-
-    localStorage.setItem(
-        "receber",
-        JSON.stringify(receber)
-    );
+    } catch (erro) {
+        console.error("Erro ao carregar:", chave, erro);
+        return [];
+    }
 }
 
 
-// ======================================================
-// FORMATAÇÃO
-// ======================================================
+/* =====================================================
+   SALVAR
+===================================================== */
+
+function salvarDados() {
+
+    localStorage.setItem("entradas", JSON.stringify(entradas));
+    localStorage.setItem("gastos", JSON.stringify(gastos));
+    localStorage.setItem("contas", JSON.stringify(contas));
+    localStorage.setItem("receber", JSON.stringify(receber));
+
+}
+
+
+/* =====================================================
+   FORMATAÇÃO
+===================================================== */
 
 function dinheiro(valor) {
 
-    return Number(valor).toLocaleString(
+    return Number(valor || 0).toLocaleString(
         "pt-BR",
         {
             style: "currency",
@@ -74,107 +62,91 @@ function dinheiro(valor) {
 
 function formatarData(data) {
 
-    if (!data) return "-";
+    if (!data) {
+        return "-";
+    }
 
-    const partes = data.split("-");
+    const partes = String(data).split("-");
 
-    if (partes.length !== 3) return data;
+    if (partes.length !== 3) {
+        return data;
+    }
 
     return `${partes[2]}/${partes[1]}/${partes[0]}`;
 
 }
 
 
-// ======================================================
-// NAVEGAÇÃO
-// ======================================================
+function escaparHTML(valor) {
+
+    return String(valor ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+/* =====================================================
+   NAVEGAÇÃO
+===================================================== */
 
 document.querySelectorAll(".menu").forEach(menu => {
 
-    menu.addEventListener("click", () => {
+    menu.addEventListener("click", function () {
 
         document.querySelectorAll(".menu")
-            .forEach(item =>
-                item.classList.remove("active")
-            );
-
-
-        menu.classList.add("active");
-
+            .forEach(item => item.classList.remove("active"));
 
         document.querySelectorAll(".page")
-            .forEach(page =>
-                page.classList.remove("active-page")
-            );
+            .forEach(page => page.classList.remove("active-page"));
 
+        this.classList.add("active");
 
-        const pagina =
-            document.getElementById(
-                menu.dataset.page
-            );
+        const pagina = document.getElementById(this.dataset.page);
 
-
-        pagina.classList.add("active-page");
+        if (pagina) {
+            pagina.classList.add("active-page");
+        }
 
     });
 
 });
 
 
-// ======================================================
-// ENTRADAS
-// ======================================================
+/* =====================================================
+   ENTRADAS
+===================================================== */
 
-document
-    .getElementById("formEntrada")
-    .addEventListener("submit", function(event) {
+document.getElementById("formEntrada")
+    .addEventListener("submit", function (event) {
 
         event.preventDefault();
 
-
         const descricao =
-            document
-                .getElementById("entradaDescricao")
-                .value.trim();
-
+            document.getElementById("entradaDescricao").value.trim();
 
         const valor =
-            Number(
-                document
-                    .getElementById("entradaValor")
-                    .value
-            );
-
+            Number(document.getElementById("entradaValor").value);
 
         const data =
-            document
-                .getElementById("entradaData")
-                .value;
-
+            document.getElementById("entradaData").value;
 
         const categoria =
-            document
-                .getElementById("entradaCategoria")
-                .value.trim();
+            document.getElementById("entradaCategoria").value.trim();
 
 
-        if (
-            !descricao ||
-            valor <= 0 ||
-            !data ||
-            !categoria
-        ) {
-
+        if (!descricao || !Number.isFinite(valor) || valor <= 0 || !data || !categoria) {
             alert("Preencha todos os campos corretamente.");
-
             return;
-
         }
 
 
         entradas.push({
 
-            id: Date.now(),
+            id: Date.now() + Math.random(),
 
             descricao,
 
@@ -196,67 +168,47 @@ document
     });
 
 
-// ======================================================
-// GASTOS
-// ======================================================
+/* =====================================================
+   GASTOS
+===================================================== */
 
-document
-    .getElementById("formGasto")
-    .addEventListener("submit", function(event) {
+document.getElementById("formGasto")
+    .addEventListener("submit", function (event) {
 
         event.preventDefault();
 
-
         const descricao =
-            document
-                .getElementById("gastoDescricao")
-                .value.trim();
-
+            document.getElementById("gastoDescricao").value.trim();
 
         const valor =
-            Number(
-                document
-                    .getElementById("gastoValor")
-                    .value
-            );
-
+            Number(document.getElementById("gastoValor").value);
 
         const data =
-            document
-                .getElementById("gastoData")
-                .value;
-
+            document.getElementById("gastoData").value;
 
         const categoria =
-            document
-                .getElementById("gastoCategoria")
-                .value.trim();
-
+            document.getElementById("gastoCategoria").value.trim();
 
         const tipo =
-            document
-                .getElementById("gastoTipo")
-                .value;
+            document.getElementById("gastoTipo").value;
 
 
         if (
             !descricao ||
+            !Number.isFinite(valor) ||
             valor <= 0 ||
             !data ||
             !categoria ||
             !tipo
         ) {
-
             alert("Preencha todos os campos do gasto.");
-
             return;
-
         }
 
 
         gastos.push({
 
-            id: Date.now(),
+            id: Date.now() + Math.random(),
 
             descricao,
 
@@ -280,67 +232,47 @@ document
     });
 
 
-// ======================================================
-// CONTAS FIXAS
-// ======================================================
+/* =====================================================
+   CONTAS FIXAS
+===================================================== */
 
-document
-    .getElementById("formConta")
-    .addEventListener("submit", function(event) {
+document.getElementById("formConta")
+    .addEventListener("submit", function (event) {
 
         event.preventDefault();
 
-
         const nome =
-            document
-                .getElementById("contaNome")
-                .value.trim();
-
+            document.getElementById("contaNome").value.trim();
 
         const valor =
-            Number(
-                document
-                    .getElementById("contaValor")
-                    .value
-            );
-
+            Number(document.getElementById("contaValor").value);
 
         const vencimento =
-            document
-                .getElementById("contaVencimento")
-                .value;
-
+            document.getElementById("contaVencimento").value;
 
         const obrigatorio =
-            document
-                .getElementById("contaObrigatorio")
-                .value;
-
+            document.getElementById("contaObrigatorio").value;
 
         const status =
-            document
-                .getElementById("contaStatus")
-                .value;
+            document.getElementById("contaStatus").value;
 
 
         if (
             !nome ||
+            !Number.isFinite(valor) ||
             valor <= 0 ||
             !vencimento ||
             !obrigatorio ||
             !status
         ) {
-
             alert("Preencha todos os campos da conta.");
-
             return;
-
         }
 
 
         contas.push({
 
-            id: Date.now(),
+            id: Date.now() + Math.random(),
 
             nome,
 
@@ -364,66 +296,46 @@ document
     });
 
 
-// ======================================================
-// A RECEBER
-// ======================================================
+/* =====================================================
+   A RECEBER
+===================================================== */
 
-document
-    .getElementById("formReceber")
-    .addEventListener("submit", function(event) {
+document.getElementById("formReceber")
+    .addEventListener("submit", function (event) {
 
         event.preventDefault();
 
-
         const nome =
-            document
-                .getElementById("receberNome")
-                .value.trim();
-
+            document.getElementById("receberNome").value.trim();
 
         const valor =
-            Number(
-                document
-                    .getElementById("receberValor")
-                    .value
-            );
-
+            Number(document.getElementById("receberValor").value);
 
         const data =
-            document
-                .getElementById("receberData")
-                .value;
-
+            document.getElementById("receberData").value;
 
         const prazo =
-            document
-                .getElementById("receberPrazo")
-                .value;
-
+            document.getElementById("receberPrazo").value;
 
         const status =
-            document
-                .getElementById("receberStatus")
-                .value;
+            document.getElementById("receberStatus").value;
 
 
         if (
             !nome ||
+            !Number.isFinite(valor) ||
             valor <= 0 ||
             !data ||
             !prazo
         ) {
-
             alert("Preencha todos os campos.");
-
             return;
-
         }
 
 
         receber.push({
 
-            id: Date.now(),
+            id: Date.now() + Math.random(),
 
             nome,
 
@@ -447,374 +359,370 @@ document
     });
 
 
-// ======================================================
-// TABELA DE ENTRADAS
-// ======================================================
+/* =====================================================
+   ENTRADAS - TABELA
+===================================================== */
 
 function mostrarEntradas() {
 
-    const lista =
-        document.getElementById(
-            "listaEntradas"
-        );
-
+    const lista = document.getElementById("listaEntradas");
 
     lista.innerHTML = "";
+
+
+    if (entradas.length === 0) {
+
+        lista.innerHTML = `
+            <tr>
+                <td colspan="5" class="empty-row">
+                    Nenhuma entrada cadastrada.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
 
 
     entradas.forEach(item => {
 
-        lista.innerHTML += `
+        lista.insertAdjacentHTML("beforeend", `
 
             <tr>
 
-                <td>
-                    ${item.descricao}
-                </td>
+                <td>${escaparHTML(item.descricao)}</td>
+
+                <td>${dinheiro(item.valor)}</td>
+
+                <td>${formatarData(item.data)}</td>
+
+                <td>${escaparHTML(item.categoria)}</td>
 
                 <td>
-                    ${dinheiro(item.valor)}
-                </td>
-
-                <td>
-                    ${formatarData(item.data)}
-                </td>
-
-                <td>
-                    ${item.categoria}
-                </td>
-
-                <td>
-
                     <button
                         class="delete"
-                        onclick="excluirEntrada(${item.id})"
+                        data-tipo="entrada"
+                        data-id="${item.id}"
                     >
                         Excluir
                     </button>
-
                 </td>
 
             </tr>
 
-        `;
+        `);
 
     });
 
 }
 
 
-// ======================================================
-// TABELA DE GASTOS
-// ======================================================
+/* =====================================================
+   GASTOS - TABELA
+===================================================== */
 
 function mostrarGastos() {
 
-    const lista =
-        document.getElementById(
-            "listaGastos"
-        );
-
+    const lista = document.getElementById("listaGastos");
 
     lista.innerHTML = "";
+
+
+    if (gastos.length === 0) {
+
+        lista.innerHTML = `
+            <tr>
+                <td colspan="6" class="empty-row">
+                    Nenhum gasto cadastrado.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
 
 
     gastos.forEach(item => {
 
-        lista.innerHTML += `
+        lista.insertAdjacentHTML("beforeend", `
 
             <tr>
 
-                <td>
-                    ${item.descricao}
-                </td>
+                <td>${escaparHTML(item.descricao)}</td>
+
+                <td>${dinheiro(item.valor)}</td>
+
+                <td>${formatarData(item.data)}</td>
+
+                <td>${escaparHTML(item.categoria)}</td>
+
+                <td>${escaparHTML(item.tipo)}</td>
 
                 <td>
-                    ${dinheiro(item.valor)}
-                </td>
-
-                <td>
-                    ${formatarData(item.data)}
-                </td>
-
-                <td>
-                    ${item.categoria}
-                </td>
-
-                <td>
-                    ${item.tipo}
-                </td>
-
-                <td>
-
                     <button
                         class="delete"
-                        onclick="excluirGasto(${item.id})"
+                        data-tipo="gasto"
+                        data-id="${item.id}"
                     >
                         Excluir
                     </button>
-
                 </td>
 
             </tr>
 
-        `;
+        `);
 
     });
 
 }
 
 
-// ======================================================
-// TABELA DE CONTAS
-// ======================================================
+/* =====================================================
+   CONTAS - TABELA
+===================================================== */
 
 function mostrarContas() {
 
-    const lista =
-        document.getElementById(
-            "listaContas"
-        );
-
+    const lista = document.getElementById("listaContas");
 
     lista.innerHTML = "";
 
 
+    if (contas.length === 0) {
+
+        lista.innerHTML = `
+            <tr>
+                <td colspan="6" class="empty-row">
+                    Nenhuma conta cadastrada.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+
     contas.forEach(item => {
 
-        lista.innerHTML += `
+        lista.insertAdjacentHTML("beforeend", `
 
             <tr>
 
-                <td>
-                    ${item.nome}
-                </td>
+                <td>${escaparHTML(item.nome)}</td>
+
+                <td>${dinheiro(item.valor)}</td>
+
+                <td>${formatarData(item.vencimento)}</td>
+
+                <td>${escaparHTML(item.obrigatorio)}</td>
+
+                <td>${escaparHTML(item.status)}</td>
 
                 <td>
-                    ${dinheiro(item.valor)}
-                </td>
-
-                <td>
-                    ${formatarData(item.vencimento)}
-                </td>
-
-                <td>
-                    ${item.obrigatorio}
-                </td>
-
-                <td>
-                    ${item.status}
-                </td>
-
-                <td>
-
                     <button
                         class="delete"
-                        onclick="excluirConta(${item.id})"
+                        data-tipo="conta"
+                        data-id="${item.id}"
                     >
                         Excluir
                     </button>
-
                 </td>
 
             </tr>
 
-        `;
+        `);
 
     });
 
 }
 
 
-// ======================================================
-// DIAS DE ATRASO
-// ======================================================
+/* =====================================================
+   DIAS DE ATRASO
+===================================================== */
 
 function calcularAtraso(prazo, status) {
 
-    if (status === "Recebido") {
-
+    if (status === "Recebido" || !prazo) {
         return 0;
-
     }
 
 
-    const hoje =
-        new Date();
+    const hoje = new Date();
+
+    hoje.setHours(0, 0, 0, 0);
 
 
-    const dataPrazo =
-        new Date(
-            prazo + "T23:59:59"
-        );
+    const partes = prazo.split("-");
 
-
-    if (hoje <= dataPrazo) {
-
+    if (partes.length !== 3) {
         return 0;
-
     }
+
+
+    const dataPrazo = new Date(
+        Number(partes[0]),
+        Number(partes[1]) - 1,
+        Number(partes[2])
+    );
+
+    dataPrazo.setHours(0, 0, 0, 0);
 
 
     const diferenca =
-        hoje.getTime() -
-        dataPrazo.getTime();
+        hoje.getTime() - dataPrazo.getTime();
+
+
+    if (diferenca <= 0) {
+        return 0;
+    }
 
 
     return Math.floor(
-        diferenca /
-        (1000 * 60 * 60 * 24)
+        diferenca / 86400000
     );
 
 }
 
 
-// ======================================================
-// TABELA A RECEBER
-// ======================================================
+/* =====================================================
+   A RECEBER - TABELA
+===================================================== */
 
 function mostrarReceber() {
 
-    const lista =
-        document.getElementById(
-            "listaReceber"
-        );
-
+    const lista = document.getElementById("listaReceber");
 
     lista.innerHTML = "";
+
+
+    if (receber.length === 0) {
+
+        lista.innerHTML = `
+            <tr>
+                <td colspan="7" class="empty-row">
+                    Nenhum valor a receber cadastrado.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
 
 
     receber.forEach(item => {
 
         const atraso =
-            calcularAtraso(
-                item.prazo,
-                item.status
-            );
+            calcularAtraso(item.prazo, item.status);
 
 
-        lista.innerHTML += `
+        lista.insertAdjacentHTML("beforeend", `
 
             <tr>
 
-                <td>
-                    ${item.nome}
-                </td>
+                <td>${escaparHTML(item.nome)}</td>
+
+                <td>${dinheiro(item.valor)}</td>
+
+                <td>${formatarData(item.data)}</td>
+
+                <td>${formatarData(item.prazo)}</td>
+
+                <td>${atraso} dia(s)</td>
+
+                <td>${escaparHTML(item.status)}</td>
 
                 <td>
-                    ${dinheiro(item.valor)}
-                </td>
-
-                <td>
-                    ${formatarData(item.data)}
-                </td>
-
-                <td>
-                    ${formatarData(item.prazo)}
-                </td>
-
-                <td>
-                    ${atraso} dia(s)
-                </td>
-
-                <td>
-                    ${item.status}
-                </td>
-
-                <td>
-
                     <button
                         class="delete"
-                        onclick="excluirReceber(${item.id})"
+                        data-tipo="receber"
+                        data-id="${item.id}"
                     >
                         Excluir
                     </button>
-
                 </td>
 
             </tr>
 
-        `;
+        `);
 
     });
 
 }
 
 
-// ======================================================
-// EXCLUSÕES
-// ======================================================
+/* =====================================================
+   EXCLUSÃO
+===================================================== */
 
-function excluirEntrada(id) {
+document.addEventListener("click", function (event) {
 
-    entradas =
-        entradas.filter(
-            item => item.id !== id
-        );
+    const botao = event.target.closest(".delete");
 
-
-    salvarDados();
-
-    atualizarTudo();
-
-}
+    if (!botao) {
+        return;
+    }
 
 
-function excluirGasto(id) {
+    const id = Number(botao.dataset.id);
 
-    gastos =
-        gastos.filter(
-            item => item.id !== id
-        );
+    const tipo = botao.dataset.tipo;
 
 
-    salvarDados();
-
-    atualizarTudo();
-
-}
+    if (!confirm("Deseja excluir este registro?")) {
+        return;
+    }
 
 
-function excluirConta(id) {
+    if (tipo === "entrada") {
 
-    contas =
-        contas.filter(
-            item => item.id !== id
-        );
+        entradas =
+            entradas.filter(item => Number(item.id) !== id);
 
-
-    salvarDados();
-
-    atualizarTudo();
-
-}
+    }
 
 
-function excluirReceber(id) {
+    if (tipo === "gasto") {
 
-    receber =
-        receber.filter(
-            item => item.id !== id
-        );
+        gastos =
+            gastos.filter(item => Number(item.id) !== id);
+
+    }
+
+
+    if (tipo === "conta") {
+
+        contas =
+            contas.filter(item => Number(item.id) !== id);
+
+    }
+
+
+    if (tipo === "receber") {
+
+        receber =
+            receber.filter(item => Number(item.id) !== id);
+
+    }
 
 
     salvarDados();
 
     atualizarTudo();
 
-}
+});
 
 
-// ======================================================
-// DASHBOARD
-// ======================================================
+/* =====================================================
+   DASHBOARD
+===================================================== */
 
 function atualizarDashboard() {
 
     const totalEntradas =
         entradas.reduce(
             (total, item) =>
-                total + Number(item.valor),
+                total + Number(item.valor || 0),
             0
         );
 
@@ -822,187 +730,123 @@ function atualizarDashboard() {
     const totalGastos =
         gastos.reduce(
             (total, item) =>
-                total + Number(item.valor),
+                total + Number(item.valor || 0),
             0
         );
 
 
     const totalReceber =
         receber
-            .filter(
-                item =>
-                    item.status !== "Recebido"
-            )
+            .filter(item => item.status !== "Recebido")
             .reduce(
                 (total, item) =>
-                    total + Number(item.valor),
+                    total + Number(item.valor || 0),
                 0
             );
 
 
     const saldo =
-        totalEntradas -
-        totalGastos;
+        totalEntradas - totalGastos;
 
 
-    document.getElementById(
-        "saldo"
-    ).textContent =
+    document.getElementById("saldo").textContent =
         dinheiro(saldo);
 
 
-    document.getElementById(
-        "totalEntradas"
-    ).textContent =
+    document.getElementById("totalEntradas").textContent =
         dinheiro(totalEntradas);
 
 
-    document.getElementById(
-        "totalGastos"
-    ).textContent =
+    document.getElementById("totalGastos").textContent =
         dinheiro(totalGastos);
 
 
-    document.getElementById(
-        "totalReceber"
-    ).textContent =
+    document.getElementById("totalReceber").textContent =
         dinheiro(totalReceber);
 
 
-    atualizarGraficos();
+    atualizarGraficos(
+        totalEntradas,
+        totalGastos
+    );
 
 }
 
 
-// ======================================================
-// GRÁFICOS
-// ======================================================
+/* =====================================================
+   GRÁFICO ENTRADAS X GASTOS
+   SEM CHART.JS
+   SEM CANVAS
+   SEM REDIMENSIONAMENTO INFINITO
+===================================================== */
 
-function atualizarGraficos() {
+function atualizarGraficoFinanceiro(
+    totalEntradas,
+    totalGastos
+) {
 
-    const canvasFinanceiro =
-        document.getElementById(
-            "graficoFinanceiro"
+    const barraEntrada =
+        document.getElementById("barraEntrada");
+
+    const barraGasto =
+        document.getElementById("barraGasto");
+
+    const valorEntrada =
+        document.getElementById("valorBarraEntrada");
+
+    const valorGasto =
+        document.getElementById("valorBarraGasto");
+
+
+    valorEntrada.textContent =
+        dinheiro(totalEntradas);
+
+    valorGasto.textContent =
+        dinheiro(totalGastos);
+
+
+    const maior =
+        Math.max(
+            totalEntradas,
+            totalGastos,
+            1
         );
 
 
-    const canvasCategorias =
-        document.getElementById(
-            "graficoCategorias"
-        );
+    const alturaEntrada =
+        (totalEntradas / maior) * 100;
 
 
-    if (
-        !canvasFinanceiro ||
-        !canvasCategorias ||
-        typeof Chart === "undefined"
-    ) {
-
-        return;
-
-    }
+    const alturaGasto =
+        (totalGastos / maior) * 100;
 
 
-    // --------------------------------------
-    // TOTAIS
-    // --------------------------------------
-
-    const totalEntradas =
-        entradas.reduce(
-            (total, item) =>
-                total + Number(item.valor),
-            0
-        );
+    barraEntrada.style.height =
+        `${alturaEntrada}%`;
 
 
-    const totalGastos =
-        gastos.reduce(
-            (total, item) =>
-                total + Number(item.valor),
-            0
-        );
+    barraGasto.style.height =
+        `${alturaGasto}%`;
+
+}
 
 
-    // --------------------------------------
-    // GRÁFICO FINANCEIRO
-    // --------------------------------------
+/* =====================================================
+   GRÁFICO POR CATEGORIA
+   FEITO COM CSS
+===================================================== */
 
-    if (!graficoFinanceiro) {
+function atualizarGraficoCategorias() {
 
-        graficoFinanceiro =
-            new Chart(
-                canvasFinanceiro,
-                {
+    const donut =
+        document.getElementById("donutCategorias");
 
-                    type: "bar",
+    const legenda =
+        document.getElementById("legendaCategorias");
 
-                    data: {
+    const totalDonut =
+        document.getElementById("totalDonut");
 
-                        labels: [
-                            "Entradas",
-                            "Gastos"
-                        ],
-
-                        datasets: [
-
-                            {
-
-                                label: "Valor",
-
-                                data: [
-                                    totalEntradas,
-                                    totalGastos
-                                ]
-
-                            }
-
-                        ]
-
-                    },
-
-                    options: {
-
-                        responsive: true,
-
-                        maintainAspectRatio: false,
-
-                        animation: false,
-
-                        plugins: {
-
-                            legend: {
-                                display: false
-                            }
-
-                        }
-
-                    }
-
-                }
-            );
-
-    } else {
-
-        graficoFinanceiro
-            .data
-            .datasets[0]
-            .data = [
-
-                totalEntradas,
-
-                totalGastos
-
-            ];
-
-
-        graficoFinanceiro.update("none");
-
-    }
-
-
-    // --------------------------------------
-    // CATEGORIAS
-    // --------------------------------------
 
     const categorias = {};
 
@@ -1010,24 +854,20 @@ function atualizarGraficos() {
     gastos.forEach(gasto => {
 
         const categoria =
-            gasto.categoria ||
-            "Sem categoria";
+            gasto.categoria || "Sem categoria";
 
 
-        if (!categorias[categoria]) {
-
-            categorias[categoria] = 0;
-
-        }
+        const valor =
+            Number(gasto.valor || 0);
 
 
-        categorias[categoria] +=
-            Number(gasto.valor);
+        categorias[categoria] =
+            (categorias[categoria] || 0) + valor;
 
     });
 
 
-    const labels =
+    const nomes =
         Object.keys(categorias);
 
 
@@ -1035,80 +875,150 @@ function atualizarGraficos() {
         Object.values(categorias);
 
 
-    // --------------------------------------
-    // GRÁFICO DE CATEGORIAS
-    // --------------------------------------
-
-    if (!graficoCategorias) {
-
-        graficoCategorias =
-            new Chart(
-                canvasCategorias,
-                {
-
-                    type: "doughnut",
-
-                    data: {
-
-                        labels,
-
-                        datasets: [
-
-                            {
-
-                                label: "Gastos",
-
-                                data: valores
-
-                            }
-
-                        ]
-
-                    },
-
-                    options: {
-
-                        responsive: true,
-
-                        maintainAspectRatio: false,
-
-                        animation: false
-
-                    }
-
-                }
-            );
-
-    } else {
-
-        graficoCategorias
-            .data
-            .labels = labels;
+    const total =
+        valores.reduce(
+            (soma, valor) => soma + valor,
+            0
+        );
 
 
-        graficoCategorias
-            .data
-            .datasets[0]
-            .data = valores;
+    totalDonut.textContent =
+        dinheiro(total);
 
 
-        graficoCategorias.update("none");
+    if (total <= 0 || nomes.length === 0) {
 
+        donut.style.background =
+            "#e5e7eb";
+
+
+        legenda.innerHTML =
+            `<p class="empty-chart">
+                Nenhum gasto cadastrado.
+            </p>`;
+
+        return;
     }
+
+
+    const cores = [
+        "#2563eb",
+        "#ef4444",
+        "#10b981",
+        "#f59e0b",
+        "#8b5cf6",
+        "#ec4899",
+        "#06b6d4",
+        "#84cc16",
+        "#f97316",
+        "#6366f1"
+    ];
+
+
+    let acumulado = 0;
+
+    const partes = [];
+
+
+    nomes.forEach((nome, indice) => {
+
+        const percentual =
+            (categorias[nome] / total) * 100;
+
+
+        const inicio =
+            acumulado;
+
+
+        acumulado += percentual;
+
+
+        partes.push(
+            `${cores[indice % cores.length]} ${inicio}% ${acumulado}%`
+        );
+
+    });
+
+
+    donut.style.background =
+        `conic-gradient(${partes.join(", ")})`;
+
+
+    legenda.innerHTML = "";
+
+
+    nomes.forEach((nome, indice) => {
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "legend-item";
+
+
+        const cor =
+            document.createElement("span");
+
+        cor.className =
+            "legend-color";
+
+
+        cor.style.background =
+            cores[indice % cores.length];
+
+
+        const texto =
+            document.createElement("span");
+
+        texto.className =
+            "legend-text";
+
+
+        texto.textContent =
+            `${nome}: ${dinheiro(categorias[nome])}`;
+
+
+        item.appendChild(cor);
+
+        item.appendChild(texto);
+
+        legenda.appendChild(item);
+
+    });
 
 }
 
 
-// ======================================================
-// RESUMO
-// ======================================================
+/* =====================================================
+   ATUALIZAÇÃO DOS GRÁFICOS
+===================================================== */
+
+function atualizarGraficos(
+    totalEntradas,
+    totalGastos
+) {
+
+    atualizarGraficoFinanceiro(
+        totalEntradas,
+        totalGastos
+    );
+
+
+    atualizarGraficoCategorias();
+
+}
+
+
+/* =====================================================
+   RESUMO
+===================================================== */
 
 function atualizarResumo() {
 
     const totalEntradas =
         entradas.reduce(
             (total, item) =>
-                total + Number(item.valor),
+                total + Number(item.valor || 0),
             0
         );
 
@@ -1116,96 +1026,74 @@ function atualizarResumo() {
     const totalGastos =
         gastos.reduce(
             (total, item) =>
-                total + Number(item.valor),
+                total + Number(item.valor || 0),
             0
         );
 
 
     const obrigatorios =
         gastos
-            .filter(
-                item =>
-                    item.tipo === "Obrigatório"
-            )
+            .filter(item => item.tipo === "Obrigatório")
             .reduce(
                 (total, item) =>
-                    total + Number(item.valor),
+                    total + Number(item.valor || 0),
                 0
             );
 
 
     const futeis =
         gastos
-            .filter(
-                item =>
-                    item.tipo === "Fútil"
-            )
+            .filter(item => item.tipo === "Fútil")
             .reduce(
                 (total, item) =>
-                    total + Number(item.valor),
+                    total + Number(item.valor || 0),
                 0
             );
 
 
     const totalReceber =
         receber
-            .filter(
-                item =>
-                    item.status !== "Recebido"
-            )
+            .filter(item => item.status !== "Recebido")
             .reduce(
                 (total, item) =>
-                    total + Number(item.valor),
+                    total + Number(item.valor || 0),
                 0
             );
 
 
     const saldo =
-        totalEntradas -
-        totalGastos;
+        totalEntradas - totalGastos;
 
 
-    document.getElementById(
-        "resumoEntradas"
-    ).textContent =
+    document.getElementById("resumoEntradas").textContent =
         dinheiro(totalEntradas);
 
 
-    document.getElementById(
-        "resumoGastos"
-    ).textContent =
+    document.getElementById("resumoGastos").textContent =
         dinheiro(totalGastos);
 
 
-    document.getElementById(
-        "resumoObrigatorios"
-    ).textContent =
+    document.getElementById("resumoObrigatorios").textContent =
         dinheiro(obrigatorios);
 
 
-    document.getElementById(
-        "resumoFuteis"
-    ).textContent =
+    document.getElementById("resumoFuteis").textContent =
         dinheiro(futeis);
 
 
-    document.getElementById(
-        "resumoSaldo"
-    ).textContent =
+    document.getElementById("resumoSaldo").textContent =
         dinheiro(saldo);
 
 
-    document.getElementById(
-        "resumoReceber"
-    ).textContent =
+    document.getElementById("resumoReceber").textContent =
         dinheiro(totalReceber);
 
 }
 
 
-// ======================================================
-// ATUALIZAR SISTEMA
-// ======================================================
+/* =====================================================
+   ATUALIZAR TUDO
+===================================================== */
 
 function atualizarTudo() {
 
@@ -1224,8 +1112,12 @@ function atualizarTudo() {
 }
 
 
-// ======================================================
-// INICIAR
-// ======================================================
+/* =====================================================
+   INICIALIZAÇÃO
+===================================================== */
 
-atualizarTudo();
+document.addEventListener("DOMContentLoaded", function () {
+
+    atualizarTudo();
+
+});

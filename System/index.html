@@ -1,170 +1,112 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#111827">
 
     <title>Minha Vida Financeira</title>
 
     <link rel="stylesheet" href="style.css">
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
-    <!-- MENU LATERAL -->
-
     <aside class="sidebar">
-
-        <div class="logo">
-            💰 Finanças
-        </div>
+        <div class="logo">💰 Finanças</div>
 
         <nav>
-
-            <button class="menu active" data-page="dashboard">
-                🏠 Dashboard
-            </button>
-
-            <button class="menu" data-page="entradas">
-                💰 Entradas
-            </button>
-
-            <button class="menu" data-page="gastos">
-                💸 Gastos
-            </button>
-
-            <button class="menu" data-page="contas">
-                📅 Contas Fixas
-            </button>
-
-            <button class="menu" data-page="receber">
-                🤝 A Receber
-            </button>
-
-            <button class="menu" data-page="resumo">
-                📊 Resumo Mensal
-            </button>
-
+            <button class="menu active" data-page="dashboard">🏠 Dashboard</button>
+            <button class="menu" data-page="entradas">💰 Entradas</button>
+            <button class="menu" data-page="gastos">💸 Gastos</button>
+            <button class="menu" data-page="contas">📅 Contas Fixas</button>
+            <button class="menu" data-page="receber">🤝 A Receber</button>
+            <button class="menu" data-page="resumo">📊 Resumo Mensal</button>
         </nav>
-
     </aside>
-
-
-    <!-- CONTEÚDO -->
 
     <main class="main">
 
-
-        <!-- ================= DASHBOARD ================= -->
-
+        <!-- DASHBOARD -->
         <section id="dashboard" class="page active-page">
 
             <header>
-
                 <h1>Dashboard</h1>
-
-                <p>
-                    Visão geral das suas finanças
-                </p>
-
+                <p>Visão geral das suas finanças</p>
             </header>
-
 
             <div class="cards">
 
                 <div class="card">
-
                     <span>Saldo atual</span>
-
-                    <strong id="saldo">
-                        R$ 0,00
-                    </strong>
-
+                    <strong id="saldo">R$ 0,00</strong>
                 </div>
 
-
                 <div class="card">
-
                     <span>Total recebido</span>
-
-                    <strong id="totalEntradas">
-                        R$ 0,00
-                    </strong>
-
+                    <strong id="totalEntradas">R$ 0,00</strong>
                 </div>
 
-
                 <div class="card">
-
                     <span>Total gasto</span>
-
-                    <strong id="totalGastos">
-                        R$ 0,00
-                    </strong>
-
+                    <strong id="totalGastos">R$ 0,00</strong>
                 </div>
 
-
                 <div class="card">
-
                     <span>A receber</span>
-
-                    <strong id="totalReceber">
-                        R$ 0,00
-                    </strong>
-
+                    <strong id="totalReceber">R$ 0,00</strong>
                 </div>
 
             </div>
-
 
             <div class="charts">
 
-
                 <div class="chart-box">
+                    <h2>Entradas x Gastos</h2>
 
-                    <h2>
-                        Entradas x Gastos
-                    </h2>
+                    <div class="bar-chart" id="graficoFinanceiro">
+                        <div class="bar-column">
+                            <div class="bar-value" id="valorBarraEntrada">R$ 0,00</div>
+                            <div class="bar-track">
+                                <div class="bar entrada" id="barraEntrada"></div>
+                            </div>
+                            <span>Entradas</span>
+                        </div>
 
-                    <div class="chart-area">
-
-                        <canvas
-                            id="graficoFinanceiro">
-                        </canvas>
-
+                        <div class="bar-column">
+                            <div class="bar-value" id="valorBarraGasto">R$ 0,00</div>
+                            <div class="bar-track">
+                                <div class="bar gasto" id="barraGasto"></div>
+                            </div>
+                            <span>Gastos</span>
+                        </div>
                     </div>
-
                 </div>
 
-
                 <div class="chart-box">
+                    <h2>Gastos por categoria</h2>
 
-                    <h2>
-                        Gastos por categoria
-                    </h2>
+                    <div class="category-chart">
 
-                    <div class="chart-area">
+                        <div class="donut" id="donutCategorias">
+                            <div class="donut-center">
+                                <strong id="totalDonut">R$ 0</strong>
+                                <span>Total</span>
+                            </div>
+                        </div>
 
-                        <canvas
-                            id="graficoCategorias">
-                        </canvas>
+                        <div class="legend" id="legendaCategorias">
+                            <p class="empty-chart">Nenhum gasto cadastrado.</p>
+                        </div>
 
                     </div>
-
                 </div>
 
             </div>
-
         </section>
 
 
-
-        <!-- ================= ENTRADAS ================= -->
-
+        <!-- ENTRADAS -->
         <section id="entradas" class="page">
 
             <h1>Entradas</h1>
@@ -175,6 +117,7 @@
                     type="text"
                     id="entradaDescricao"
                     placeholder="Descrição"
+                    autocomplete="off"
                     required
                 >
 
@@ -182,8 +125,9 @@
                     type="number"
                     id="entradaValor"
                     placeholder="Valor"
+                    min="0.01"
                     step="0.01"
-                    min="0"
+                    inputmode="decimal"
                     required
                 >
 
@@ -197,46 +141,34 @@
                     type="text"
                     id="entradaCategoria"
                     placeholder="Categoria"
+                    autocomplete="off"
                     required
                 >
 
-                <button type="submit">
-                    Adicionar entrada
-                </button>
+                <button type="submit">Adicionar entrada</button>
 
             </form>
 
-
             <div class="table-container">
-
                 <table>
-
                     <thead>
-
                         <tr>
-
                             <th>Descrição</th>
                             <th>Valor</th>
                             <th>Data</th>
                             <th>Categoria</th>
                             <th>Ação</th>
-
                         </tr>
-
                     </thead>
 
                     <tbody id="listaEntradas"></tbody>
-
                 </table>
-
             </div>
 
         </section>
 
 
-
-        <!-- ================= GASTOS ================= -->
-
+        <!-- GASTOS -->
         <section id="gastos" class="page">
 
             <h1>Gastos</h1>
@@ -247,6 +179,7 @@
                     type="text"
                     id="gastoDescricao"
                     placeholder="Descrição"
+                    autocomplete="off"
                     required
                 >
 
@@ -254,8 +187,9 @@
                     type="number"
                     id="gastoValor"
                     placeholder="Valor"
+                    min="0.01"
                     step="0.01"
-                    min="0"
+                    inputmode="decimal"
                     required
                 >
 
@@ -269,63 +203,41 @@
                     type="text"
                     id="gastoCategoria"
                     placeholder="Categoria"
+                    autocomplete="off"
                     required
                 >
 
                 <select id="gastoTipo" required>
-
-                    <option value="">
-                        Tipo de gasto
-                    </option>
-
-                    <option value="Obrigatório">
-                        Obrigatório
-                    </option>
-
-                    <option value="Fútil">
-                        Fútil
-                    </option>
-
+                    <option value="">Tipo de gasto</option>
+                    <option value="Obrigatório">Obrigatório</option>
+                    <option value="Fútil">Fútil</option>
                 </select>
 
-                <button type="submit">
-                    Adicionar gasto
-                </button>
+                <button type="submit">Adicionar gasto</button>
 
             </form>
 
-
             <div class="table-container">
-
                 <table>
-
                     <thead>
-
                         <tr>
-
                             <th>Descrição</th>
                             <th>Valor</th>
                             <th>Data</th>
                             <th>Categoria</th>
                             <th>Tipo</th>
                             <th>Ação</th>
-
                         </tr>
-
                     </thead>
 
                     <tbody id="listaGastos"></tbody>
-
                 </table>
-
             </div>
 
         </section>
 
 
-
-        <!-- ================= CONTAS FIXAS ================= -->
-
+        <!-- CONTAS FIXAS -->
         <section id="contas" class="page">
 
             <h1>Contas Fixas</h1>
@@ -336,6 +248,7 @@
                     type="text"
                     id="contaNome"
                     placeholder="Nome da conta"
+                    autocomplete="off"
                     required
                 >
 
@@ -343,8 +256,9 @@
                     type="number"
                     id="contaValor"
                     placeholder="Valor"
+                    min="0.01"
                     step="0.01"
-                    min="0"
+                    inputmode="decimal"
                     required
                 >
 
@@ -355,76 +269,44 @@
                 >
 
                 <select id="contaObrigatorio" required>
-
-                    <option value="">
-                        É obrigatório?
-                    </option>
-
-                    <option value="Sim">
-                        Sim
-                    </option>
-
-                    <option value="Não">
-                        Não
-                    </option>
-
+                    <option value="">É obrigatório?</option>
+                    <option value="Sim">Sim</option>
+                    <option value="Não">Não</option>
                 </select>
-
 
                 <select id="contaStatus" required>
-
-                    <option value="Pendente">
-                        Pendente
-                    </option>
-
-                    <option value="Paga">
-                        Paga
-                    </option>
-
+                    <option value="Pendente">Pendente</option>
+                    <option value="Paga">Paga</option>
                 </select>
 
-
-                <button type="submit">
-                    Adicionar conta
-                </button>
+                <button type="submit">Adicionar conta</button>
 
             </form>
 
-
             <div class="table-container">
-
                 <table>
-
                     <thead>
-
                         <tr>
-
                             <th>Conta</th>
                             <th>Valor</th>
                             <th>Vencimento</th>
                             <th>Obrigatória</th>
                             <th>Status</th>
                             <th>Ação</th>
-
                         </tr>
-
                     </thead>
 
                     <tbody id="listaContas"></tbody>
-
                 </table>
-
             </div>
 
         </section>
 
 
-
-        <!-- ================= A RECEBER ================= -->
-
+        <!-- A RECEBER -->
         <section id="receber" class="page">
 
-            <h1>Dinheiro a Receber</h1>
+            <h1>A Receber</h1>
 
             <form id="formReceber">
 
@@ -432,6 +314,7 @@
                     type="text"
                     id="receberNome"
                     placeholder="Pessoa"
+                    autocomplete="off"
                     required
                 >
 
@@ -439,8 +322,9 @@
                     type="number"
                     id="receberValor"
                     placeholder="Valor"
+                    min="0.01"
                     step="0.01"
-                    min="0"
+                    inputmode="decimal"
                     required
                 >
 
@@ -457,32 +341,18 @@
                 >
 
                 <select id="receberStatus">
-
-                    <option value="Pendente">
-                        Pendente
-                    </option>
-
-                    <option value="Recebido">
-                        Recebido
-                    </option>
-
+                    <option value="Pendente">Pendente</option>
+                    <option value="Recebido">Recebido</option>
                 </select>
 
-                <button type="submit">
-                    Adicionar
-                </button>
+                <button type="submit">Adicionar</button>
 
             </form>
 
-
             <div class="table-container">
-
                 <table>
-
                     <thead>
-
                         <tr>
-
                             <th>Pessoa</th>
                             <th>Valor</th>
                             <th>Data</th>
@@ -490,106 +360,51 @@
                             <th>Dias em atraso</th>
                             <th>Status</th>
                             <th>Ação</th>
-
                         </tr>
-
                     </thead>
 
                     <tbody id="listaReceber"></tbody>
-
                 </table>
-
             </div>
 
         </section>
 
 
-
-        <!-- ================= RESUMO ================= -->
-
+        <!-- RESUMO -->
         <section id="resumo" class="page">
 
             <h1>Resumo Mensal</h1>
 
-
             <div class="summary">
 
-
                 <div>
-
-                    <span>
-                        Entradas
-                    </span>
-
-                    <strong id="resumoEntradas">
-                        R$ 0,00
-                    </strong>
-
+                    <span>Entradas</span>
+                    <strong id="resumoEntradas">R$ 0,00</strong>
                 </div>
 
-
                 <div>
-
-                    <span>
-                        Gastos
-                    </span>
-
-                    <strong id="resumoGastos">
-                        R$ 0,00
-                    </strong>
-
+                    <span>Gastos</span>
+                    <strong id="resumoGastos">R$ 0,00</strong>
                 </div>
 
-
                 <div>
-
-                    <span>
-                        Obrigatórios
-                    </span>
-
-                    <strong id="resumoObrigatorios">
-                        R$ 0,00
-                    </strong>
-
+                    <span>Obrigatórios</span>
+                    <strong id="resumoObrigatorios">R$ 0,00</strong>
                 </div>
 
-
                 <div>
-
-                    <span>
-                        Fúteis
-                    </span>
-
-                    <strong id="resumoFuteis">
-                        R$ 0,00
-                    </strong>
-
+                    <span>Fúteis</span>
+                    <strong id="resumoFuteis">R$ 0,00</strong>
                 </div>
 
-
                 <div>
-
-                    <span>
-                        Saldo
-                    </span>
-
-                    <strong id="resumoSaldo">
-                        R$ 0,00
-                    </strong>
-
+                    <span>Saldo</span>
+                    <strong id="resumoSaldo">R$ 0,00</strong>
                 </div>
 
-
                 <div>
-
-                    <span>
-                        A receber
-                    </span>
-
-                    <strong id="resumoReceber">
-                        R$ 0,00
-                    </strong>
-
+                    <span>A receber</span>
+                    <strong id="resumoReceber">R$ 0,00</strong>
                 </div>
 
             </div>
@@ -598,9 +413,7 @@
 
     </main>
 
-
     <script src="script.js"></script>
 
 </body>
-
 </html>
